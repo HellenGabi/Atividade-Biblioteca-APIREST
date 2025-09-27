@@ -2,11 +2,13 @@ package com.exemplo.biblioteca.biblioteca.Dao;
 
 import com.exemplo.biblioteca.biblioteca.Database.Conexao;
 import com.exemplo.biblioteca.biblioteca.Model.Usuario;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class UsuarioDAO {
 
     public Usuario salvarUser(Usuario usuario) throws SQLException {
@@ -29,7 +31,7 @@ public class UsuarioDAO {
 
     public List<Usuario> buscarTodosUsuarios() throws SQLException {
 
-        String query = " SELECT id, nome, email FROM usuarios";
+        String query = " SELECT id, nome, email FROM usuario";
 
         List<Usuario> usuarios = new ArrayList<>();
 
@@ -48,7 +50,7 @@ public class UsuarioDAO {
         return usuarios;
     }
 
-    public Usuario buscarPorId(Usuario usuario) throws SQLException{
+    public Usuario buscarPorId(int id) throws SQLException{
         String query = "SELECT id, nome, email FROM usuario WHERE id = ?";
 
         int newId = 0;
@@ -58,7 +60,7 @@ public class UsuarioDAO {
         try(Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(query)){
 
-            stmt.setInt(1, usuario.getId());
+            stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
             if(rs.next()){
@@ -85,7 +87,7 @@ public class UsuarioDAO {
 
     public void deletarUsuario(int id) throws  SQLException{
 
-        String query = "DELECT FROM usuario WHERE id = ?";
+        String query = "DELETE FROM usuario WHERE id = ?";
 
         try(Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(query)){

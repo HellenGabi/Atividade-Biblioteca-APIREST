@@ -3,9 +3,12 @@ package com.exemplo.biblioteca.biblioteca.Service;
 import com.exemplo.biblioteca.biblioteca.Dao.EmprestimoDAO;
 import com.exemplo.biblioteca.biblioteca.Dao.UsuarioDAO;
 import com.exemplo.biblioteca.biblioteca.Model.Usuario;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
+
+@Service
 
 public class UsuarioService {
 
@@ -25,32 +28,26 @@ public class UsuarioService {
     }
 
 
-    public List<Usuario> buscarPorId (Usuario usuario) throws  SQLException{
-        return (List<Usuario>) dao.buscarPorId(usuario);
+    public Usuario buscarPorId (int id) throws  SQLException{
+        return dao.buscarPorId(id);
     }
 
-    public void atualizarUsuario (int id) throws SQLException{
-    List<Usuario> usuarios =dao.buscarTodosUsuarios();
-        for(Usuario usuario: usuarios){
-            if(usuario.getId()==id){
-                dao.atualizarUsuario(usuario);
-                return;
-            }
-        }
-        throw new RuntimeException( "ID nao encontrado para fazer a atualização");
-    }
-
-    public void deletarUsuario (int id) throws  SQLException {
+    public Usuario atualizarUsuario(int id, Usuario usuario) throws SQLException{
         List<Usuario> usuarios = dao.buscarTodosUsuarios();
 
-        for (Usuario usuario : usuarios) {
-
-            if (usuario.getId() == id){
-                dao.deletarUsuario(id);
-                return;
+        for(Usuario u : usuarios){
+            if(u.getId() == id){
+                usuario.setId(id);
+                dao.atualizarUsuario(usuario);
+                return usuario;
             }
         }
-        throw new RuntimeException("ID nao encontrado para fazer o delete deste usuario.");
+        throw new RuntimeException("ID do usuário não existe!");
+    }
+
+    public Usuario deletarUsuario(int id) throws SQLException{
+        dao.deletarUsuario(id);
+        return null;
     }
 
 

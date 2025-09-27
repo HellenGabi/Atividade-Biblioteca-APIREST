@@ -1,7 +1,6 @@
 package com.exemplo.biblioteca.biblioteca.Model;
 
 public class Livro {
-
     private int id;
     private String titulo;
     private String autor;
@@ -19,6 +18,8 @@ public class Livro {
         this.autor = autor;
         this.ano_publicacao = ano_publicacao;
     }
+
+    public Livro(){}
 
     public int getId() {
         return id;

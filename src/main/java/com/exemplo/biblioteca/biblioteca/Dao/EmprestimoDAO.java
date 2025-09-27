@@ -2,12 +2,14 @@ package com.exemplo.biblioteca.biblioteca.Dao;
 
 import com.exemplo.biblioteca.biblioteca.Database.Conexao;
 import com.exemplo.biblioteca.biblioteca.Model.Emprestimo;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class EmprestimoDAO {
 
 

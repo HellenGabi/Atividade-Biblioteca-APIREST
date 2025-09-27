@@ -2,15 +2,17 @@ package com.exemplo.biblioteca.biblioteca.Dao;
 
 import com.exemplo.biblioteca.biblioteca.Database.Conexao;
 import com.exemplo.biblioteca.biblioteca.Model.Livro;
-import com.exemplo.biblioteca.biblioteca.Model.Usuario;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
+
 public class LivroDAO {
 
-    public void salvaLivro (Livro livro) throws SQLException {
+    public Livro salvaLivro (Livro livro) throws SQLException {
 
         String query = "INSERT INTO livro(titulo, autor,ano_publicacao)VALUES(?,?,?)";
 
@@ -26,9 +28,10 @@ public class LivroDAO {
                 livro.setId(rs.getInt(1));
             }
         }
+        return livro;
     }
 
-    public List<Livro> buscarTodos () throws SQLException{
+    public List<Livro> buscarTodosLivros () throws SQLException{
 
         String query = "SELECT id, titulo, autor, ano_publicacao FROM livro";
 
@@ -49,54 +52,54 @@ public class LivroDAO {
             }
         return livros;
     }
-    public Livro buscarPorId(int id) throws SQLException{
+    public Livro buscarLivroPorID(int id) throws SQLException{
         String query = "SELECT id, titulo, autor, ano_publicacao FROM livro WHERE id = ?";
 
-        int newId = 0;
+        int newID = 0;
         String titulo = "";
         String autor = "";
-        int ano_publicacao = 0;
+        int anoPublicacao = 0;
 
         try(Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(query)){
 
-            stmt.setInt(1, id);
+            stmt.setInt(1,id);
             ResultSet rs = stmt.executeQuery();
 
             if(rs.next()){
-                newId = rs.getInt("id");
-                titulo = rs.getString("nome");
-                autor = rs.getString("email");
-                ano_publicacao = rs.getInt("ano_publicacao");
+                newID = rs.getInt("id");
+                titulo = rs.getString("titulo");
+                autor = rs.getString("autor");
+                anoPublicacao = rs.getInt("ano_publicacao");
             }
         }
-
-        return new Livro(newId, titulo, autor, ano_publicacao);
+        return new Livro(newID, titulo, autor, anoPublicacao);
     }
 
-    public void atualizar(Livro livro) throws SQLException{
-        String query = "UPDATE livro SET titulo = ?, autor = ? WHERE id = ? ";
+    public void atualizarLivro(Livro livro) throws SQLException{
+        String query = "UPDATE livro SET titulo = ?, autor = ?, ano_publicacao = ? WHERE id = ? ";
 
         try(Connection conn = Conexao.conectar();
             PreparedStatement stmt = conn.prepareStatement(query)){
 
             stmt.setString(1, livro.getTitulo());
             stmt.setString(2, livro.getAutor());
-            stmt.setInt(3, livro.getId());
+            stmt.setInt(3,livro.getAno_publicacao());
+            stmt.setInt(4, livro.getId());
             stmt.executeUpdate();
         }
     }
 
-    public void deletar(int id) throws  SQLException{
+    public void deletarLivro(int id) throws SQLException{
+        String query = "DELETE FROM livro WHERE id = ?";
 
-     String query = "DELECT FROM livro WHERE id = ?";
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
 
-     try(Connection conn = Conexao.conectar();
-     PreparedStatement stmt = conn.prepareStatement(query)){
-     stmt.setInt(1, id);
-     stmt.executeUpdate();
-                    }
+            stmt.setInt(1,id);
+            stmt.executeUpdate();
         }
+    }
 
 
     }
