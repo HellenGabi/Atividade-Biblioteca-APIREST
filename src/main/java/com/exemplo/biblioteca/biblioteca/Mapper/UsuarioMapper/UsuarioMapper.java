@@ -1,0 +1,30 @@
+package com.exemplo.biblioteca.biblioteca.Mapper.UsuarioMapper;
+
+import com.exemplo.biblioteca.biblioteca.DTO.UsuarioDTO.CriacaoUsuarioRequisicaoDTO;
+import com.exemplo.biblioteca.biblioteca.DTO.UsuarioDTO.CriacaoUsuarioRespostaDTO;
+import com.exemplo.biblioteca.biblioteca.Model.Usuario;
+
+public class UsuarioMapper {
+
+    public Usuario paraEntidade(CriacaoUsuarioRequisicaoDTO requisicaoDTO) {
+        return new Usuario(requisicaoDTO.nome()
+                , requisicaoDTO.email());
+    }
+
+    public CriacaoUsuarioRespostaDTO paraRespostaDTO(Usuario usuario) {
+        return new CriacaoUsuarioRespostaDTO(usuario.getId()
+                , usuario.getNome()
+                , usuario.getEmail());
+    }
+
+    public Usuario paraUpdate(CriacaoUsuarioRequisicaoDTO requisicaoDTO, Usuario usuario) {
+        if ((requisicaoDTO.nome() != usuario.getNome() && requisicaoDTO.nome() != null)) {
+            usuario.setNome(requisicaoDTO.nome());
+        }
+
+        if ((requisicaoDTO.email() != usuario.getEmail() && requisicaoDTO.email() != null)) {
+            usuario.setEmail(requisicaoDTO.email());
+        }
+        return usuario;
+    }
+}

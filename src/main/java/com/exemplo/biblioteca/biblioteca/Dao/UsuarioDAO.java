@@ -97,4 +97,43 @@ public class UsuarioDAO {
     }
 
 
+    public boolean usersExiste(int id) throws SQLException {
+        String query = """
+            SELECT id
+                  ,nome
+                  ,email
+            FROM usuario
+            WHERE id = ?
+            """;
+
+        int newUsers = 0;
+        String nome = "";
+        String email = "";
+
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean UsuarioExisteporID(int id)throws SQLException{
+        String query = "SELECT id FROM usuarios WHERE id = ?";
+
+        try(Connection conn = Conexao.conectar();
+        PreparedStatement st = conn.prepareStatement(query)){
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+
+            if(rs.next()){
+                return true;
+            }
+        }
+        return false;
+    }
 }

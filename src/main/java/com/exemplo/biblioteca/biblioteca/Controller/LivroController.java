@@ -1,8 +1,11 @@
 package com.exemplo.biblioteca.biblioteca.Controller;
 
+import com.exemplo.biblioteca.biblioteca.DTO.LivroDTO.CriacaoLivroRequisicaoDTO;
+import com.exemplo.biblioteca.biblioteca.DTO.LivroDTO.CriacaoLivroRespostaDTO;
 import com.exemplo.biblioteca.biblioteca.Model.Livro;
-import com.exemplo.biblioteca.biblioteca.Model.Usuario;
 import com.exemplo.biblioteca.biblioteca.Service.LivroService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -21,64 +24,67 @@ public class LivroController {
     }
 
     @PostMapping
-    public Livro salvaLivro(
-            @RequestBody Livro livro
+    public ResponseEntity<CriacaoLivroRespostaDTO> salvaLivro(
+            @RequestBody CriacaoLivroRequisicaoDTO requisicaoUsuario
     ){
-        Livro newLivro = new Livro();
-
         try{
-            newLivro = service.salvaLivro(livro);
+           return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(service.salvaLivro(requisicaoUsuario));
         } catch (SQLException e){
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
         }
-        return newLivro;
     }
 
     @GetMapping
-    public List<Livro> buscarTodosLivros(){
-        List<Livro> listarLivros = new ArrayList<>();
-
+    public ResponseEntity< List<CriacaoLivroRespostaDTO>> buscarTodosLivros(){
         try{
-            listarLivros = service.buscarTodosLivros();
+            return  ResponseEntity.status(HttpStatus.OK)
+                    .body(service.buscarTodosLivros());
         }catch (SQLException e){
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
         }
-        return listarLivros;
     }
 
     @GetMapping("/{id}")
-    public Livro buscarPorId(
+    public ResponseEntity < CriacaoLivroRespostaDTO > buscarPorId(
             @PathVariable int id
-    ){
-        Livro novoLivro = new Livro();
-
-        try{
-            novoLivro = (Livro) service.buscarPorId(id);
-        } catch (SQLException e){
-            e.printStackTrace();
+    ) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(service.buscarPorId(id));
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
         }
-        return novoLivro;
     }
 
     @PutMapping("/{id}")
-    public Livro atualizarLivro(@PathVariable int id, @RequestBody Livro livro){
+    public ResponseEntity < Livro > atualizarLivro(
+            @PathVariable int id, @RequestBody Livro livro){
         Livro newLivro = new Livro();
         try{
             newLivro = service.atualizarLivro(id, livro);
         }catch (SQLException e){
             e.printStackTrace();
         }
-        return newLivro;
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(newLivro);
     }
 
     @DeleteMapping("/{id}")
-    public Livro deletarLivro(@PathVariable int id){
-        Livro newLivro = new Livro();
+    public ResponseEntity<Void> deletarLivro(
+            @PathVariable int id){
         try{
-            newLivro = service.deletarLivro(id);
+            service.deletarLivro(id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .build();
         }catch (SQLException e){
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
         }
-        return newLivro;
     }
 }

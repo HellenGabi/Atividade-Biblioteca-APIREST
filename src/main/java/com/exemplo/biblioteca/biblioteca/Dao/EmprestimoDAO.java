@@ -1,5 +1,6 @@
 package com.exemplo.biblioteca.biblioteca.Dao;
 
+import com.exemplo.biblioteca.biblioteca.DTO.EmprestimoDTO.CriacaoEmprestimoRequisicaoDTO;
 import com.exemplo.biblioteca.biblioteca.Database.Conexao;
 import com.exemplo.biblioteca.biblioteca.Model.Emprestimo;
 import org.springframework.stereotype.Repository;
@@ -13,7 +14,7 @@ import java.util.List;
 public class EmprestimoDAO {
 
 
-    public Emprestimo salvarEmprestimo (Emprestimo emprestimo) throws SQLException {
+    public Emprestimo salvarEmprestimo (CriacaoEmprestimoRequisicaoDTO emprestimo) throws SQLException {
 
         String query = "INSERT INTO emprestimo ( livro_id, usuario_id, data_emprestimo, data_devolucao)VALUES(?,?,?,?)";
 
@@ -108,6 +109,25 @@ public class EmprestimoDAO {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         }
+    }
+
+    public boolean emprestimoExiste(int id) throws SQLException {
+        String query = """
+            SELECT id
+            FROM emprestimo
+            WHERE id = ?
+            """;
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

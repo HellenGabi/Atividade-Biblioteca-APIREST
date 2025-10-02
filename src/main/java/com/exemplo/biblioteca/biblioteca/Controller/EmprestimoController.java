@@ -1,9 +1,14 @@
 package com.exemplo.biblioteca.biblioteca.Controller;
 
+import com.exemplo.biblioteca.biblioteca.DTO.EmprestimoDTO.CriacaoEmprestimoRequisicaoDTO;
+import com.exemplo.biblioteca.biblioteca.DTO.EmprestimoDTO.CriacaoEmprestimoRespostaDTO;
 import com.exemplo.biblioteca.biblioteca.Model.Emprestimo;
 import com.exemplo.biblioteca.biblioteca.Model.Livro;
 import com.exemplo.biblioteca.biblioteca.Service.EmprestimoService;
 import com.exemplo.biblioteca.biblioteca.Service.LivroService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -21,47 +26,46 @@ public class EmprestimoController {
     }
 
     @PostMapping
-    public Emprestimo salvarEmprestimo(
-            @RequestBody Emprestimo emprestimo
+    public ResponseEntity<CriacaoEmprestimoRespostaDTO> salvarEmprestimo(
+            @RequestBody CriacaoEmprestimoRequisicaoDTO requisicaoEmprestimo
     ){
-        Emprestimo newEmprestimo = new Emprestimo();
-
         try{
-            newEmprestimo = service.salvarEmprestimo(emprestimo);
+         return ResponseEntity.status(HttpStatus.CREATED)
+                 .body(service.salvarEmprestimo(requisicaoEmprestimo));
         } catch (SQLException e){
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
         }
-        return newEmprestimo;
     }
 
     @GetMapping
-    public List<Emprestimo> buscarTodosEmprestimos(){
-        List<Emprestimo> listarEmprestimos = new ArrayList<>();
-
+    public ResponseEntity< List<CriacaoEmprestimoRespostaDTO> > buscarTodosEmprestimos(){
         try{
-            listarEmprestimos = service.buscarTodosEmprestimos();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(service.buscarTodosEmprestimos());
         }catch (SQLException e){
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
         }
-        return listarEmprestimos;
     }
 
     @GetMapping("/id")
-    public Emprestimo buscarPorId(
+    public ResponseEntity< CriacaoEmprestimoRespostaDTO > buscarPorId(
             @PathVariable int id
     ){
-        Emprestimo novoEmprestimo = new Emprestimo();
-
         try{
-            novoEmprestimo = (Emprestimo) service.buscarPorId(id);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(service.buscarPorId(id));
         } catch (SQLException e){
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
         }
-        return novoEmprestimo;
     }
 
     @PutMapping("/id")
-    public Emprestimo atualizarEmprestimo (
+    public ResponseEntity< Emprestimo > atualizarEmprestimo (
             @PathVariable int id)
     {
         Emprestimo novoEmprestimo = new Emprestimo();
@@ -71,15 +75,21 @@ public class EmprestimoController {
         } catch (SQLException e){
             e.printStackTrace();
         }
-        return novoEmprestimo;
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(novoEmprestimo);
     }
 
     @DeleteMapping("/id")
-    public void deletarEmprestimo (@PathVariable int id){
+    public ResponseEntity< Void > deletarEmprestimo (
+            @PathVariable int id){
         try{
            service.deletarEmprestimo(id);
+           return ResponseEntity.status(HttpStatus.OK)
+                   .build();
         } catch (SQLException e){
             e.printStackTrace();
         }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }

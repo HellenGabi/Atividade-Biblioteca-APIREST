@@ -102,7 +102,34 @@ public class LivroDAO {
     }
 
 
+    public boolean livroExiste(int id) throws SQLException {
+        String query = """
+            SELECT id
+                  ,titulo
+                  ,autor
+                  ,ano_publicacao
+            FROM livro
+            WHERE id = ?
+            """;
+
+        int newLivros = 0;
+        String titulo = "";
+        String autor = "";
+        int ano_publicacao = 0;
+
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()){
+                return true;
+            }
+        }
+        return false;
     }
+}
 
 
 
